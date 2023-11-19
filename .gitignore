@@ -92,3 +92,5 @@ ENV/
 
 # PKL files
 *.pkl
+
+.vscode/
