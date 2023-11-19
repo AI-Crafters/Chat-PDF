@@ -7,6 +7,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.callbacks import get_openai_callback
 import os
@@ -17,17 +18,15 @@ import pickle
  
 # Sidebar contents
 with st.sidebar:
-    st.title('🤗💬 LLM Chat App')
+    st.title('🤗💬 LLM ChatPDF App')
+    add_vertical_space(5)
     st.markdown('''
     ## About
-    This app is an LLM-powered chatbot built using:
-    - [Streamlit](https://streamlit.io/)
-    - [LangChain](https://python.langchain.com/)
-    - [OpenAI](https://platform.openai.com/docs/models) LLM model
- 
+    This app is an LLM-powered chatbot built using Streamlit, LangChain and OpenAI:
+    - [Organization](https://github.com/AI-Crafters)
     ''')
     add_vertical_space(5)
-    st.write('Made with ❤️ by [Prompt Engineer](https://youtube.com/@engineerprompt)')
+    st.write('Made with ❤️ by [AI-Crafters](https://www.aicrafters.com/en/)')
  
 load_dotenv()
  
@@ -71,19 +70,20 @@ def main():
         #     # Replace _thread.RLock with threading.Lock
         #     VectorStore.lock = threading.Lock()
         #     with open(f"{store_name}.pkl", "wb") as f:
-        #         pickle.dump(VectorStore, f)
+        #         pickle.dump(VectorStore, f) 
  
         embeddings = OpenAIEmbeddings()
         VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
  
         # Accept user questions/query
         query = st.text_input("Ask questions about your PDF file:")
-        # st.write(query)
+        # st.write(query) 
  
         if query:
             docs = VectorStore.similarity_search(query=query, k=3)
  
-            llm = OpenAI(model_name='gpt-3.5-turbo')
+            # llm = OpenAI()
+            llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613", max_tokens=500)
             chain = load_qa_chain(llm=llm, chain_type="stuff")
             with get_openai_callback() as cb:
                 response = chain.run(input_documents=docs, question=query)

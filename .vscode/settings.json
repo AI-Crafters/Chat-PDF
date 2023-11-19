@@ -1,0 +1,7 @@
+{
+    "indentRainbow.ignoreErrorLanguages": [
+
+        "markdown"
+    ],
+    "pythonIndent.useTabOnHangingIndent": true
+}
